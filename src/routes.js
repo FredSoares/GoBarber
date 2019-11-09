@@ -1,17 +1,13 @@
-//import da classe Router do express
-const { Router } = require('express')
+// import da classe Router do express
+import { Router } from "express";
 
-//instancia da classe Router
-const routes = new Router()
+// instancia da classe Router
+const routes = new Router();
 
-//rota raiz
-routes.get('/', (req, res)=>{
-  return res.json({
-    message: "Hello World!"
-  })
-})
+// rota raiz
+routes.get("/", (req, res) => res.json({
+  message: "Hello World!",
+}));
 
-//export do routes
-module.exports = routes
-
-
+// export do routes
+export default routes;
