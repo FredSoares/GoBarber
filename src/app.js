@@ -1,5 +1,7 @@
-import express from "express";
-import routes from "./routes";
+import express from 'express';
+import routes from './routes';
+
+import './database';
 
 class App {
   // metodo que será chamado na inicialização da classe
@@ -22,5 +24,5 @@ class App {
   }
 }
 // export da classe para que possa ser utilizada por outras classes
-// PS: App().server como é a unica coisa que será utilizado foi passado diretamente
+// OBS: App().server porque é a unica coisa que será utilizado foi passado diretamente
 module.exports = new App().server;

@@ -15,11 +15,9 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'prettier/prettier': 'error',
     'class-methods-use-this': 'off',
     'no-param-ressign': 'off',
-    'no-unsed-vars': ['error', { argsIgnorePattern: 'next' }],
-    'no-unsed-vars': 'off',
+    'no-unused-vars': ['error', { argsIgnorePattern: 'next' }],
     'camelcase': 'off',
   },
 };
