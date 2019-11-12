@@ -20,11 +20,19 @@ class User extends Model {
     this.addHook('beforeSave', async (user) => {
       // vericar se existe o campo password
       if (user.password) {
+        // faz a criptografia do password com o peso 8
+        // OBS: o peso pode ser outro numero á escolha do utilizador
         user.password_hash = await bcrypt.hash(user.password, 8);
       }
     });
 
     return this;
+  }
+
+  // Vericar password no memonto da autenticação
+  checkPassword(password) {
+    // compara o password recebido com criptografado
+    return bcrypt.compare(password, this.password_hash);
   }
 }
 
