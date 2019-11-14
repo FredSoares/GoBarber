@@ -1,8 +1,23 @@
+import * as Yup from 'yup';
 import User from '../models/User';
 
 class UserController {
   // função que recebe os dados da requisição e faz a criação do utilizador na DB
   async store(req, res) {
+    // schema dos dados da requisição utilizando o Yup
+    const schema = Yup.object().shape(
+      {
+        name: Yup.string().required(),
+        email: Yup.string().email().required(),
+        password: Yup.string().required().min(6),
+      },
+    );
+
+    // verificar se o schema está valido
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
     // verificar se já existe um utilizador com o mesmo email resistrado
     const userExists = await User.findOne({ where: { email: req.body.email } });
 
@@ -25,6 +40,26 @@ class UserController {
 
   // recebe os dados da requisição e faz a atualização dado do utilizador
   async update(req, res) {
+    // schema dos dados da requisição utilizando o Yup
+    const schema = Yup.object().shape(
+      {
+        name: Yup.string(),
+        email: Yup.string().email(),
+        oldPassword: Yup.string().min(6),
+        password: Yup.string()
+          .min(6)
+          .when('oldPassword', (oldPassword, field) => (oldPassword ? field.required() : field)),
+        confirmPassword: Yup.string()
+          .when('password', (password, field) => (password ? field.required()
+            .oneOf([Yup.ref('password')]) : field)),
+      },
+    );
+
+    // verificar se o schema está valido
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
     // pegar o email e o password antigo no corpo da função
     const { email, oldPassword } = req.body;
 
@@ -36,7 +71,7 @@ class UserController {
       // vericar se o novo email já existe
       const userExists = await User.findOne({ where: { email } });
       if (userExists) {
-        return res.status(401).json({ error: 'User already exists.' });
+        return res.status(401).json({ error: 'User already exists' });
       }
     }
 
