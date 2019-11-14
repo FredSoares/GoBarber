@@ -29,7 +29,7 @@ class User extends Model {
     return this;
   }
 
-  // Vericar password no memonto da autenticação
+  // Vericar password no memento da autenticação e atualização
   checkPassword(password) {
     // compara o password recebido com criptografado
     return bcrypt.compare(password, this.password_hash);

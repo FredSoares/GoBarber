@@ -25,9 +25,36 @@ class UserController {
 
   // recebe os dados da requisição e faz a atualização dado do utilizador
   async update(req, res) {
-    console.log(req.userId);
+    // pegar o email e o password antigo no corpo da função
+    const { email, oldPassword } = req.body;
 
-    return res.json({ ok: true });
+    // selecionar o user elo ID
+    const user = await User.findByPk(req.userId);
+
+    // verificar se o email é diferente da requisição para saber se é para atualizar
+    if (email !== user.email) {
+      // vericar se o novo email já existe
+      const userExists = await User.findOne({ where: { email } });
+      if (userExists) {
+        return res.status(401).json({ error: 'User already exists.' });
+      }
+    }
+
+    // caso o email não existir ainda validadar a password
+    // verifica se foi enviado o oldPassword e se o mesmo está correto
+    if (oldPassword && !(await user.checkPassword(oldPassword))) {
+      return res.status(401).json({ error: 'Password does not match' });
+    }
+
+    // atualizar e pegar id, name e provider
+    const { id, name, provider } = await user.update(req.body);
+
+    return res.json({
+      id,
+      name,
+      email,
+      provider,
+    });
   }
 }
 
