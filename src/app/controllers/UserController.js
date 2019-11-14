@@ -22,6 +22,13 @@ class UserController {
       provider,
     });
   }
+
+  // recebe os dados da requisição e faz a atualização dado do utilizador
+  async update(req, res) {
+    console.log(req.userId);
+
+    return res.json({ ok: true });
+  }
 }
 
 export default new UserController();
