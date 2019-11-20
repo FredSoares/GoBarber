@@ -14,8 +14,8 @@ export default async (req, res, next) => {
     return res.status(401).json({ error: 'Token not provided' });
   }
 
-  // pegar o token utilizando a desestrututazação isto porque
-  // o array está no seguinte formato Array [Bearer, token]
+  /* pegar o token utilizando a desestrututazação porque
+  o array está no seguinte formato Array [Bearer, token] */
   const [, token] = authHeader.split(' ');
   console.log(token);
   try {
