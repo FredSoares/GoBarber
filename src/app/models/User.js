@@ -29,6 +29,13 @@ class User extends Model {
     return this;
   }
 
+  /* metodo que recebe todos os models da aplicação */
+  static associate(models) {
+    /* Cria uma associação entre this (a fonte) e o destino fornecido.
+     * A chave estrangeira é adicionada na fonte. */
+    this.belongsTo(models.File, { foreignKey: 'avatar_id' });
+  }
+
   // Vericar password no memento da autenticação e atualização
   checkPassword(password) {
     // compara o password recebido com criptografado
