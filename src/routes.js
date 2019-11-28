@@ -9,6 +9,8 @@ import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import ProviderController from './app/controllers/ProviderController';
+import AppointmentController from './app/controllers/AppointmentController';
+
 // import do middleware da autenticação
 import authMiddleware from './app/middleware/auth';
 // instancia da classe Router
@@ -30,6 +32,9 @@ routes.put('/users', UserController.update);
 
 // rota para todos os prestadores de serviços
 routes.get('/providers', ProviderController.index);
+
+// rota para agendamento de serviços
+routes.post('/appointments', AppointmentController.store);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
