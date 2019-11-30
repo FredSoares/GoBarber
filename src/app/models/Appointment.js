@@ -19,8 +19,8 @@ class Appointment extends Model {
      * A chave estrangeira é adicionada na fonte. */
     /* OBS: quando o relacionamento é entre mais que 2 tabelas é obrigatorio
      * utilizar o as:'nome do relacionamento' */
-    this.belongsTo(models.File, { foreignKey: 'user_id', as: 'user' });
-    this.belongsTo(models.File, { foreignKey: 'provider_id', as: 'provider' });
+    this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
+    this.belongsTo(models.User, { foreignKey: 'provider_id', as: 'provider' });
   }
 }
 

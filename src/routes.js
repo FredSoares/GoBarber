@@ -35,6 +35,7 @@ routes.get('/providers', ProviderController.index);
 
 // rota para agendamento de serviços
 routes.post('/appointments', AppointmentController.store);
+routes.get('/appointments', AppointmentController.index);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
