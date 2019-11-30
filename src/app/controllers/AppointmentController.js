@@ -1,8 +1,12 @@
 import * as Yup from 'yup';
-import { startOfHour, parseISO, isBefore } from 'date-fns';
+import {
+  startOfHour, parseISO, isBefore, format,
+} from 'date-fns';
+
 import Appointment from '../models/Appointment';
 import User from '../models/User';
 import File from '../models/File';
+import Notification from '../schemas/Notification';
 
 class AppointmentControler {
   /* Listar todos os agendamantos */
@@ -85,11 +89,26 @@ class AppointmentControler {
       return res.status(400).json({ error: 'Appointment date is not availability' });
     }
 
+    /* registrar na db */
     const appointment = await Appointment.create({
       user_id: req.userId,
       provider_id,
       date,
     });
+
+    /* Notificar prestador de serviço */
+    const user = await User.findByPk(req.userId);
+    const formattedDate = format(
+      hourStart,
+      "'dia' dd 'de' MMMM', ás' H:mm'h'",
+      { locale: pt },
+    );
+
+    await Notification.create({
+      content: `Novo agendamento de ${user.name} para ${fomartedDate}`,
+      user: provider_id,
+    });
+
     return res.json(appointment);
   }
 }
