@@ -42,7 +42,7 @@ class Mail {
     );
   }
 
-  sedMail(message) {
+  sendMail(message) {
     return this.transport.sendMail({
       ...mailConfig.default,
       ...message,
