@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import {
   startOfHour, parseISO, isBefore, format,
 } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 
 import Appointment from '../models/Appointment';
 import User from '../models/User';
@@ -105,7 +106,7 @@ class AppointmentControler {
     );
 
     await Notification.create({
-      content: `Novo agendamento de ${user.name} para ${fomartedDate}`,
+      content: `Novo agendamento de ${user.name} para ${formattedDate}`,
       user: provider_id,
     });
 
