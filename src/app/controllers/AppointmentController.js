@@ -8,7 +8,9 @@ import Appointment from '../models/Appointment';
 import User from '../models/User';
 import File from '../models/File';
 import Notification from '../schemas/Notification';
-import Mail from '../../lib/Mail';
+
+import CancellationMail from '../jobs/CancellationMail';
+import Queue from '../../lib/Queue';
 
 class AppointmentControler {
   /* Listar todos os agendamantos */
@@ -123,8 +125,18 @@ class AppointmentControler {
           as: 'provider',
           attributes: ['name', 'email'],
         },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
+        },
       ],
     });
+
+    /* verifiacar se  existe a marcação */
+    if (!appointment) {
+      return res.status(404).json({ error: 'Appointment not found ' });
+    }
 
     /* verifiacar se o id do user que fez a marcação é igual ao da requisição */
     if (appointment.user_id !== req.userId) {
@@ -140,17 +152,16 @@ class AppointmentControler {
       });
     }
 
-    /* colocar data do cancelamento no campo cancelar */
+    /* colocar data do cancelamento no campo canceled_at */
     appointment.canceled_at = new Date();
     /* salvar alteração */
     await appointment.save();
 
     /* enviar email de alerta de cancelamento */
-    await Mail.sedMail({
-      to: `${appointment.provider.name} <${appointment.provider.email}>`,
-      subject: 'Agendamento cancelado',
-      text: 'Você tem um novo cancelamento',
+    await Queue.add(CancellationMail.key, {
+      appointment,
     });
+
     return res.json(appointment);
   }
 }

@@ -14,7 +14,7 @@ import ScheduleController from './app/controllers/ScheduleController';
 import NotificationController from './app/controllers/NotificationController';
 
 // import do middleware da autenticação
-import authMiddleware from './app/middleware/auth';
+import authMiddleware from './app/middlewares/auth';
 // instancia da classe Router
 const routes = new Router();
 const upload = multer(multerConfig);
