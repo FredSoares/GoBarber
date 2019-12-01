@@ -8,6 +8,7 @@ import Appointment from '../models/Appointment';
 import User from '../models/User';
 import File from '../models/File';
 import Notification from '../schemas/Notification';
+import Mail from '../../lib/Mail';
 
 class AppointmentControler {
   /* Listar todos os agendamantos */
@@ -115,7 +116,15 @@ class AppointmentControler {
 
   /* cancelar um agendamento */
   async delete(req, res) {
-    const appointment = await Appointment.findByPk(req.params.id);
+    const appointment = await Appointment.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['name', 'email'],
+        },
+      ],
+    });
 
     /* verifiacar se o id do user que fez a marcação é igual ao da requisição */
     if (appointment.user_id !== req.userId) {
@@ -131,9 +140,17 @@ class AppointmentControler {
       });
     }
 
+    /* colocar data do cancelamento no campo cancelar */
     appointment.canceled_at = new Date();
-
+    /* salvar alteração */
     await appointment.save();
+
+    /* enviar email de alerta de cancelamento */
+    await Mail.sedMail({
+      to: `${appointment.provider.name} <${appointment.provider.email}>`,
+      subject: 'Agendamento cancelado',
+      text: 'Você tem um novo cancelamento',
+    });
     return res.json(appointment);
   }
 }
